@@ -3,8 +3,8 @@ services:
   web:
     image: nginx:latest
     volumes:
-      - /Users/kyledomingo/Downloads/gg:/app/
-      - /Users/kyledomingo/Pictures/gg:/app/gg2/ # You can add multiple locations in your machine to the docker container
+      - /Users/kyledomingo/Downloads:/app/
+      - /Users/kyledomingo/Pictures:/app/2/ # You can add multiple locations in your machine to the docker container
       - ./docker/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - '8080:80'
@@ -16,8 +16,8 @@ services:
       context: .
       dockerfile: ./docker/fpm.dockerfile
     volumes:
-      - /Users/kyledomingo/Downloads/gg:/app/ # any photo directories added must match with those in web
-      - /Users/kyledomingo/Pictures/gg:/app/gg2/ # any photo directories added must match with those in web
+      - /Users/kyledomingo/Downloads:/app/ # any photo directories added must match with those in web
+      - /Users/kyledomingo/Pictures:/app/2/ # any photo directories added must match with those in web
       - ./index.php:/app/index.php
       - ./thumbnail.php:/app/thumbnail.php
       - ./vendor:/app/vendor/
