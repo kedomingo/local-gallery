@@ -36,12 +36,21 @@ export default function Gallery({
     const [showTo, setShowTo] = useState(5);
     const [items, setItems] = useState(filterImages(imageData?.files ?? []));
 
-    const renderDirs = (dirs: string[]) => {
+    const renderDirs = (dirs: { path: string, thumbnail: string | null }[]) => {
         return dirs.map((dir) =>
-            (<div key={dir}><a className="cursor-pointer" onClick={() => {
-                setOpen(true);
-                reloadData(dir);
-            }}>{dir}</a></div>)
+            (<div key={dir.path} className="basis-1/8 p-3">
+                <a className="cursor-pointer" onClick={() => {
+                    setOpen(true);
+                    reloadData(dir.path);
+                }}>
+                    {dir.thumbnail === 'BACK' ? (<img src="/back.png" width={100}/>) : (
+                        <img src={SERVER + "/thumbnail.php?path=" + encodeURIComponent(dir.thumbnail ?? '')}
+                             alt={dir.path}/>)}
+
+                </a>
+                <br/>
+                {dir.path.replace(/.*\/([^\/]+$)/, '$1').substring(0, 12)}
+            </div>)
         );
     }
 
@@ -82,7 +91,7 @@ export default function Gallery({
 
     return (
         <div>
-            <div>{renderDirs(imageData?.dirs ?? [])}</div>
+            <div className="flex flex-wrap">{renderDirs(imageData?.dirs ?? [])}</div>
             <br/>
 
             {items.length > 0 ? (<button onClick={() => setOpen(true)}>Open Gallery</button>) : <></>}

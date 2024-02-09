@@ -21,15 +21,23 @@ Run `ifconfig` to determine your machine's IP address
 
 <img width="701" alt="Screenshot 2024-02-09 at 20 40 54" src="https://github.com/kedomingo/local-gallery/assets/1763107/d28e79f3-4469-467b-bc2d-90c20c3c33c8">
 
+There is no thumbnail support for this setup, unless you install PHP GD and composer locally and run composer install 
+
 #### using nginx+fpm on docker
 
 If you are being limited by the performance of the single-threaded built-in PHP server, you can opt to use 
 a real webserver in the form of Nginx + PHP-FPM. This can be done easily because of docker. Nginx and FPM are also
 already pre-configured here.
 
+This setup includes PHP GD and will generate thumbnails by finding the first available usable photo in the directory tree 
+
 1. Install docker
 2. Open `docker-compose.yaml` and change the mapping of `/app` to your images root directory. In my case it is `/Users/kyledomingo/Downloads/`
 3. Run `docker compose up web`
+
+#### Install intervention/image for thumbnail support
+
+1. Run `docker-compose run --rm composer install`
 
 ### Nodejs
 

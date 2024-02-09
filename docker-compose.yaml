@@ -3,7 +3,8 @@ services:
   web:
     image: nginx:latest
     volumes:
-      - /Users/kyledomingo/Downloads/:/app/
+      - /Users/kyledomingo/Downloads:/app/
+      - /Users/kyledomingo/Pictures:/app/2/ # You can add multiple locations in your machine to the docker container
       - ./docker/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - '8080:80'
@@ -11,8 +12,23 @@ services:
       - web-fpm
 
   web-fpm:
-    image: php:8.1-fpm
+    build:
+      context: .
+      dockerfile: ./docker/fpm.dockerfile
     volumes:
-      - /Users/kyledomingo/Downloads/:/app/
+      - /Users/kyledomingo/Downloads:/app/ # any photo directories added must match with those in web
+      - /Users/kyledomingo/Pictures:/app/2/ # any photo directories added must match with those in web
       - ./index.php:/app/index.php
+      - ./thumbnail.php:/app/thumbnail.php
+      - ./vendor:/app/vendor/
       - ./docker/fpm.conf:/usr/local/etc/php-fpm.d/www.conf
+
+  # Run composer commands. Example docker-compose run --rm composer install
+  composer:
+    build:
+      context: .
+      dockerfile: ./docker/composer.dockerfile
+    volumes:
+      - ./:/code
+    working_dir: /code
+    entrypoint: /app/composer.phar
