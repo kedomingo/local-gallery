@@ -10,7 +10,9 @@ application
 
 Run `ifconfig` to determine your machine's IP address
 
-### PHP
+### PHP...
+
+#### using barebones PHP server
 
 1. Install PHP
 2. Put the `index.php` file to the folder where your photos reside
@@ -19,6 +21,15 @@ Run `ifconfig` to determine your machine's IP address
 
 <img width="701" alt="Screenshot 2024-02-09 at 20 40 54" src="https://github.com/kedomingo/local-gallery/assets/1763107/d28e79f3-4469-467b-bc2d-90c20c3c33c8">
 
+#### using nginx+fpm on docker
+
+If you are being limited by the performance of the single-threaded built-in PHP server, you can opt to use 
+a real webserver in the form of Nginx + PHP-FPM. This can be done easily because of docker. Nginx and FPM are also
+already pre-configured here.
+
+1. Install docker
+2. Open `docker-compose.yaml` and change the mapping of `/app` to your images root directory. In my case it is `/Users/kyledomingo/Downloads/`
+3. Run `docker compose up web`
 
 ### Nodejs
 
@@ -49,7 +60,8 @@ Click on the directory names to navigate. Click on the first link (ending in `/.
 ### Limitations
 
 Because the images in the server do not have thumbnails, rendering all of them in small format is the same as downloading them in full.
-This takes a very long time if your folders have hundreds of images (because the PHP server we are using is very primitive).
+This takes a very long time if your folders have hundreds of images - especially if you are using the
+built-in single-threaded PHP server.
 
 Because of this, we avoid displaying all photos at once and instead implement a moving window approach where only
 10 images are loaded at one time. That is, if you get to the 6th image, then the current images loaded in the frontend
