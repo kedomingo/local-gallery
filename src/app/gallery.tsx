@@ -4,18 +4,22 @@ import {useState} from "react";
 import Lightbox from "yet-another-react-lightbox";
 import {Zoom} from "yet-another-react-lightbox/plugins";
 
-import {SERVER} from "@/app/page";
+import {SERVER} from "@/app/constants";
 
-export default function Gallery({imageData, reloadData, currentPath}) {
+export default function Gallery({
+                                    imageData,
+                                    reloadData,
+                                    currentPath
+                                }: { imageData: any, reloadData: any, currentPath: any }) {
 
     const [currentIndex, setIndex] = useState(0);
     const [realIndex, setRealIndex] = useState(0);
     const [isOpen, setOpen] = useState(false);
 
 
-    const filterImages = (files) => {
+    const filterImages = (files: string[]) => {
         let count = 0;
-        const newItems = [];
+        const newItems: string[] = [];
         files.forEach((file) => {
             if (!file.match(/\.jpg$/)) {
                 return <></>
@@ -32,7 +36,7 @@ export default function Gallery({imageData, reloadData, currentPath}) {
     const [showTo, setShowTo] = useState(5);
     const [items, setItems] = useState(filterImages(imageData?.files ?? []));
 
-    const renderDirs = (dirs) => {
+    const renderDirs = (dirs: string[]) => {
         return dirs.map((dir) =>
             (<div key={dir}><a className="cursor-pointer" onClick={() => {
                 setOpen(true);
@@ -41,7 +45,7 @@ export default function Gallery({imageData, reloadData, currentPath}) {
         );
     }
 
-    const changeItems = (index) => {
+    const changeItems = (index: number) => {
 
         let realImageIndex = realIndex;
         if (index > currentIndex) {

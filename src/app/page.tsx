@@ -2,8 +2,7 @@
 
 import Gallery from "@/app/gallery";
 import {useEffect, useState} from "react";
-
-export const SERVER = 'http://192.168.0.145:8080';
+import {SERVER} from "@/app/constants";
 
 export default function Home() {
 
