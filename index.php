@@ -20,10 +20,20 @@ foreach (scandir($path) as $file) {
         if ($file === '..' || $thumbnail !== '') {
             $dirs[] = ['path' => $subpath . '/' . $file, 'thumbnail' => $file === '..' ? 'BACK' : $thumbnail];
         }
-    } else {
+    } elseif (preg_match('/\.jpg/i', $file)) {
         $files[] = $subpath . '/' . $file;
     }
 }
+
+// Fix alphabetical sort of files to consider number suffix
+usort($files, function (string $a, string $b) {
+    if (preg_match('/-(\d+)\.jpg/', $a, $match1)
+     && preg_match('/-(\d+)\.jpg/', $b, $match2)){
+        return $match1[1] - $match2[1];
+    }
+    return strcmp($a, $b);
+});
+
 echo json_encode([
     'dirs' => $dirs,
     'files' => $files,
