@@ -48,8 +48,8 @@ Click on the directory names to navigate. Click on the first link (ending in `/.
 
 ### Limitations
 
-Because the image server do not have thumbnails, rendering all of them in small format is the same as downloading them in full.
-This takes a very long time if your folder have hundreds of images (because the PHP server we are using is very primitive).
+Because the images in the server do not have thumbnails, rendering all of them in small format is the same as downloading them in full.
+This takes a very long time if your folders have hundreds of images (because the PHP server we are using is very primitive).
 
 Because of this, we avoid displaying all photos at once and instead implement a moving window approach where only
 10 images are loaded at one time. That is, if you get to the 6th image, then the current images loaded in the frontend
