@@ -1,0 +1,18 @@
+version: '3.4'
+services:
+  web:
+    image: nginx:latest
+    volumes:
+      - /Users/kyledomingo/Downloads/:/app/
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - '8080:80'
+    depends_on:
+      - web-fpm
+
+  web-fpm:
+    image: php:8.1-fpm
+    volumes:
+      - /Users/kyledomingo/Downloads/:/app/
+      - ./index.php:/app/index.php
+      - ./docker/fpm.conf:/usr/local/etc/php-fpm.d/www.conf
