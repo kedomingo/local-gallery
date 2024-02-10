@@ -69,7 +69,7 @@ export default function Gallery({
     let count = 0;
     const newItems: string[] = [];
     files.forEach((file) => {
-      if (!file.match(/\.jpg$/)) {
+      if (!file.match(/\.jpg$/i)) {
         return <></>;
       }
       if (count >= showFrom && count <= showTo) {
@@ -168,12 +168,12 @@ export default function Gallery({
       {items.length > 0 ? (
         <>
           <button onClick={() => setOpen(true)}>Open Gallery</button>
-
-          {renderImageLinks(getAllImages())}
         </>
       ) : (
         <></>
       )}
+
+      {renderImageLinks(getAllImages())}
 
       <div>
         <Lightbox
