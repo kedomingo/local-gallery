@@ -26,9 +26,23 @@ foreach (scandir($path) as $file) {
 }
 
 // Fix alphabetical sort of files to consider number suffix
+usort($dirs, function (array $a, array $b) {
+    // Prefixed
+    if (preg_match('/-(\d+)$/', $a['path'], $match1)
+     && preg_match('/-(\d+)$/', $b['path'], $match2)){
+        return $match1[1] - $match2[1];
+    }
+    // Only numbers
+    if (preg_match('/\/(\d+)$/', $a['path'], $match1)
+     && preg_match('/\/(\d+)$/', $b['path'], $match2)){
+        return $match1[1] - $match2[1];
+    }
+    return strcmp($a['path'], $b['path']);
+});
+
 usort($files, function (string $a, string $b) {
-    if (preg_match('/-(\d+)\.jpg/', $a, $match1)
-     && preg_match('/-(\d+)\.jpg/', $b, $match2)){
+    if (preg_match('/-(\d+)\.jpg$/', $a, $match1)
+     && preg_match('/-(\d+)\.jpg$/', $b, $match2)){
         return $match1[1] - $match2[1];
     }
     return strcmp($a, $b);
@@ -41,7 +55,7 @@ echo json_encode([
 
 function getThumbnail(string $dir): ?string
 {
-    if (preg_match('#/..$#', $dir)) {
+    if (preg_match('#/\.\.$#', $dir)) {
         return null;
     }
     $skipped = 0;
