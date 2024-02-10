@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import { Zoom } from "yet-another-react-lightbox/plugins";
 
@@ -15,28 +15,9 @@ export default function Gallery({
   reloadData: any;
   currentPath: any;
 }) {
-  const [currentIndex, setIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [realIndex, setRealIndex] = useState(0);
   const [isOpen, setOpen] = useState(false);
-
-  const filterImages = (files: string[]) => {
-    let count = 0;
-    const newItems: string[] = [];
-    files.forEach((file) => {
-      if (!file.match(/\.jpg$/)) {
-        return <></>;
-      }
-      if (count >= showFrom && count < showTo) {
-        newItems.push(file);
-      }
-      count++;
-    });
-    return newItems;
-  };
-
-  const [showFrom, setShowFrom] = useState(0);
-  const [showTo, setShowTo] = useState(5);
-  const [items, setItems] = useState(filterImages(imageData?.files ?? []));
 
   const renderDirs = (dirs: { path: string; thumbnail: string | null }[]) => {
     return dirs.map((dir) => (
@@ -67,35 +48,36 @@ export default function Gallery({
     ));
   };
 
-  const changeItems = (index: number) => {
-    let realImageIndex = realIndex;
-    if (index > currentIndex) {
-      // sliding to the right
-      realImageIndex = realIndex + 1;
-    } else if (index < currentIndex) {
-      // sliding to the left
-      realImageIndex = realIndex - 1;
-    }
-    setRealIndex(realImageIndex);
+  const renderImageLinks = (images: string[]) => {
+    const links: ReactElement[] = [];
+    images.forEach((image, i) => {
+      links.push(
+        <a
+          key={image}
+          href="#"
+          className={"block p-1 cursor-pointer"}
+          onClick={() => openLightboxAtIndex(i)}
+        >
+          {image}
+        </a>,
+      );
+    });
+    return links;
+  };
 
-    // Fix to center of array
-    if (
-      realImageIndex >= 5 &&
-      realImageIndex <= (imageData?.files?.length ?? 5)
-    ) {
-      index = 5;
-    }
-    setIndex(index);
-
-    console.log("realImageIndex is now " + realImageIndex);
-    console.log("index is now " + index);
-
-    setShowFrom(Math.max(0, (realImageIndex ?? 0) - 5));
-    setShowTo(
-      Math.min(imageData?.files?.length ?? 0, (realImageIndex ?? 0) + 5),
-    );
-    const newItems = filterImages(imageData?.files ?? []);
-    setItems(newItems);
+  const filterImages = (files: string[], showFrom: number, showTo: number) => {
+    let count = 0;
+    const newItems: string[] = [];
+    files.forEach((file) => {
+      if (!file.match(/\.jpg$/)) {
+        return <></>;
+      }
+      if (count >= showFrom && count <= showTo) {
+        newItems.push(file);
+      }
+      count++;
+    });
+    return newItems;
   };
 
   const getItems = () => {
@@ -105,13 +87,90 @@ export default function Gallery({
     });
   };
 
+  const onWindowIndexChanged = (index: number) => {
+    let realImageIndex = realIndex;
+    if (index > currentIndex) {
+      // sliding to the right
+      realImageIndex = realIndex + 1;
+    } else if (index < currentIndex) {
+      // sliding to the left
+      realImageIndex = realIndex - 1;
+    }
+    moveRealIndexTo(realImageIndex);
+  };
+
+  const moveRealIndexTo = (realIndex: number) => {
+    setRealIndex(realIndex);
+
+    // Get items to the left and right of the realIndex
+    const useLeft = Math.max(0, realIndex - getHalfWindowSize());
+    const useRight = Math.min(
+      getAllImagesCount() - 1,
+      realIndex + getHalfWindowSize(),
+    );
+    // setShowFrom(useLeft);
+    // setShowTo(useRight);
+    const newItems = filterImages(getAllImages(), useLeft, useRight);
+    setItems(newItems);
+
+    const effectiveIndexInWindow = realIndex - useLeft;
+    setCurrentIndex(effectiveIndexInWindow);
+
+    console.log("realImageIndex is now " + realIndex);
+    console.log("index is now " + effectiveIndexInWindow);
+  };
+
+  const openLightboxAtIndex = (realIndex: number) => {
+    moveRealIndexTo(realIndex);
+
+    setOpen(true);
+  };
+
+  const isNearTheStart = (idx: number): boolean => {
+    return idx < getHalfWindowSize();
+  };
+
+  const isNearTheEnd = (idx: number): boolean => {
+    const distance = getDistanceFromEnd(idx);
+    // If no images, distance is negative. malformed!
+
+    return distance >= 0 && distance < getHalfWindowSize();
+  };
+
+  const getDistanceFromEnd = (idx: number): number => {
+    return getAllImagesCount() - idx;
+  };
+
+  const getAllImagesCount = (): number => {
+    return getAllImages().length;
+  };
+
+  const getAllImages = (): string[] => {
+    return imageData?.files ?? [];
+  };
+
+  /**
+   * Return the max number of items to the left or right of the currently selected image
+   */
+  const getHalfWindowSize = (): number => {
+    return 5;
+  };
+
+  const [items, setItems] = useState(
+    filterImages(getAllImages(), 0, getHalfWindowSize()),
+  );
+
   return (
     <div>
       <div className="flex flex-wrap">{renderDirs(imageData?.dirs ?? [])}</div>
       <br />
 
       {items.length > 0 ? (
-        <button onClick={() => setOpen(true)}>Open Gallery</button>
+        <>
+          <button onClick={() => setOpen(true)}>Open Gallery</button>
+
+          {renderImageLinks(getAllImages())}
+        </>
       ) : (
         <></>
       )}
@@ -126,7 +185,7 @@ export default function Gallery({
           slides={getItems()}
           on={{
             view: ({ index }) => {
-              changeItems(index);
+              onWindowIndexChanged(index);
             },
           }}
         />
