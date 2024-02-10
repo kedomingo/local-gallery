@@ -58,13 +58,12 @@ Make sure your device is in the same local network as your image server. Access 
 
 Click on the directory names (or thumbnails if available) to navigate. Click on the first link (ending in `/..`) to go up one directory level.
 
-![Screenshot_2024-02-10-07-18-29-139_com android chrome](https://github.com/kedomingo/local-gallery/assets/1763107/08e542c6-4f61-46fd-86d5-c07abf2c4f22)
 
+<img width="300" alt="gallery on mobile" src="https://github.com/kedomingo/local-gallery/assets/1763107/08e542c6-4f61-46fd-86d5-c07abf2c4f22">
 
 **Click on the Open Gallery link to open the lightbox. Swipe images and pinch to zoom.**
 
-![Screenshot_20240209_204431_org mozilla firefox](https://github.com/kedomingo/local-gallery/assets/1763107/85e76eec-7fba-4719-afd6-eac67e5500a3)
-
+<img width="300" alt="gallery on tablet" src="https://github.com/kedomingo/local-gallery/assets/1763107/85e76eec-7fba-4719-afd6-eac67e5500a3">
 
 
 ### Limitations
