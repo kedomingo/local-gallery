@@ -37,6 +37,8 @@ This setup includes PHP GD and will generate thumbnails by finding the first ava
 
 #### Install intervention/image for thumbnail support
 
+This is optional but highly recommended.
+
 1. Run `docker-compose run --rm composer install`
 
 ### Nodejs
@@ -54,9 +56,9 @@ This setup includes PHP GD and will generate thumbnails by finding the first ava
 
 Make sure your device is in the same local network as your image server. Access your server using the IP address at port 3000.
 
-Click on the directory names to navigate. Click on the first link (ending in `/..`) to go up one directory level.
+Click on the directory names (or thumbnails if available) to navigate. Click on the first link (ending in `/..`) to go up one directory level.
 
-![Screenshot_20240209_204356_org mozilla firefox](https://github.com/kedomingo/local-gallery/assets/1763107/43fef4ff-8ce6-41d2-8c67-8e4f435669ea)
+![Screenshot_2024-02-10-07-18-29-139_com android chrome](https://github.com/kedomingo/local-gallery/assets/1763107/08e542c6-4f61-46fd-86d5-c07abf2c4f22)
 
 
 **Click on the Open Gallery link to open the lightbox. Swipe images and pinch to zoom.**
@@ -67,10 +69,13 @@ Click on the directory names to navigate. Click on the first link (ending in `/.
 
 ### Limitations
 
-Because the images in the server do not have thumbnails, rendering all of them in small format is the same as downloading them in full.
+Because the images in the server do not have pre-generated thumbnails, rendering all of them in small format is the same as downloading them in full.
 This takes a very long time if your folders have hundreds of images - especially if you are using the
 built-in single-threaded PHP server.
 
-Because of this, we avoid displaying all photos at once and instead implement a moving window approach where only
+Because of this, we avoid displaying all photos at once and instead implement a moving window approach in the image folders where only
 10 images are loaded at one time. That is, if you get to the 6th image, then the current images loaded in the frontend
 are only images #2 - #11.
+
+If thumbnail generation is enabled, we are also only generating thumbnails at runtime and relying on the browser's caching to store them.
+Loading of thumbnails will be slow for the first time or in a new device (or when browser caching is disabled)
